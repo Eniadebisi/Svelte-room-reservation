@@ -14,9 +14,11 @@ datasource db {
 }
 
 model User {
-  id          Int           @id
-  email       String
+  id          Int           @id @default(autoincrement())
+  email       String        @unique
+  password    String
   name        String
+  role        Int // 0 = Guest 1 = user 2 = admin 3 = owner
   Reservation Reservation[]
 }
 
@@ -28,15 +30,14 @@ model Room {
 }
 
 model Reservation {
-  id     Int   @id
-  roomId Int?
-  Room   Room? @relation(fields: [roomId], references: [id])
+  id     Int  @id
+  roomId Int
+  Room   Room @relation(fields: [roomId], references: [id])
   userId Int
-  user   User  @relation(fields: [userId], references: [id])
+  user   User @relation(fields: [userId], references: [id])
 
   startTime  DateTime
-  lenght     DateTime
-  recurring  Boolean
+  length     DateTime
   Recurrence Recurrence?
 }
 

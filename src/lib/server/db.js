@@ -1,6 +1,6 @@
 import { PrismaClient } from "@prisma/client";
 
-export const db = new PrismaClient({
+export const prisma = new PrismaClient({
   log: [
     {
       emit: "event",
@@ -24,6 +24,7 @@ export const db = new PrismaClient({
 // db.$on("query", (e) => {})
 
 export async function queryRooms() {
-  const rooms = await db.room.findMany();
+  const rooms = await prisma.room.findMany();
   return rooms;
 }
+
