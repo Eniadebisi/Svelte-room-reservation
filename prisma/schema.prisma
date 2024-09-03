@@ -26,7 +26,9 @@ model Room {
   id           Int           @id @default(autoincrement())
   name         String
   size         Int
+  location     Location      @relation(fields: [locationId], references: [id])
   reservations Reservation[]
+  locationId   Int
 }
 
 model Reservation {
@@ -36,9 +38,16 @@ model Reservation {
   userId Int
   user   User @relation(fields: [userId], references: [id])
 
+  details String @db.VarChar(200)
   startTime  DateTime
-  length     DateTime
+  length     Int
   Recurrence Recurrence?
+}
+
+model Location {
+  id    Int    @id @default(autoincrement())
+  rooms Room[]
+  name  String
 }
 
 model Recurrence {

@@ -29,6 +29,7 @@ export const handle = async ({ event, resolve }) => {
         id: user.id,
         email: user.email,
         role: user.role,
+        name: user.name,
       };
 
       locals.user = sessionUser;

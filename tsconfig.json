@@ -36,6 +36,7 @@
 		"$lib": ["./src/lib"],
 		"$lib/*": ["./src/lib/*"],
 		"$src": ["./src"],
+		"$static": ["./static/"],
 		"$src/*": ["./src/*"],
 		// "$logger": ["./logger"],
 		"$db": ["./src/lib/server/db.js"],
