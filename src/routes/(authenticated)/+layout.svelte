@@ -12,6 +12,7 @@
     </a>
     <div class="navbar-nav d-flex flex-row flex-grow-1 justify-content-between px-5">
       <a class="nav-link active" aria-current="page" href="/reservations">Reservations</a>
+      <a class="nav-link" href="/spaces">Manage Spaces</a>
       <a class="nav-link" href="/users">Manage Users</a>
       <a class="nav-link" href="/profile">Profile</a>
     </div>
