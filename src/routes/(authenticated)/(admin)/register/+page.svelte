@@ -1,7 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { websiteName } from "$lib/settings";
-  import { error } from "@sveltejs/kit";
   import type { ActionData, PageData } from "./$types";
 
   export let data: PageData;
@@ -19,25 +18,18 @@
     class="container-sm text-center"
     action="?"
     use:enhance={({ formElement, formData, action, cancel, submitter }) => {
-      // `formElement` is this `<form>` element
-      // `formData` is its `FormData` object that's about to be submitted
-      // `action` is the URL to which the form is posted
-      // calling `cancel()` will prevent the submission
-      // `submitter` is the `HTMLElement` that caused the form to be submitted
-
       let pw = formData.get("password");
-      let vPw = formData.get("verifyPassword");      
+      let vPw = formData.get("verifyPassword");
       if (pw !== vPw && !!form) {
         cancel();
-        form.error = "Passwords don't match"
+        form.error = "Passwords don't match";
       }
 
-      let role = formData.get("role")
+      let role = formData.get("role");
       if (role == "-1" && !!form) {
-        cancel()
-        form.error = "Please select a role"
+        cancel();
+        form.error = "Please select a role";
       }
-
 
       return async ({ result, update }) => {
         update();
@@ -78,7 +70,6 @@
         <option value="0">Guest</option>
       </select>
     </div>
-
 
     {#if form?.error}
       <div class="notice error m-2">
