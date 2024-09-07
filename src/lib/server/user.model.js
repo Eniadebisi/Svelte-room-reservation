@@ -53,3 +53,8 @@ export async function checkSignIn(email, password) {
   // Generate token
   return {token: jwt.sign(jwtUser, JWT_ACCESS_SECRET, { expiresIn: "1d" })}
 }
+
+export async function getUsers() {
+  const users = await prisma.user.findMany()
+  return users
+}
