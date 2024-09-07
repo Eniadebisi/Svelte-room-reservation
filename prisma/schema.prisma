@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -18,7 +12,7 @@ model User {
   email       String        @unique
   password    String
   name        String
-  role        Int // 0 = Guest 1 = user 2 = admin 3 = owner
+  role        Int
   Reservation Reservation[]
 }
 
@@ -26,35 +20,40 @@ model Room {
   id           Int           @id @default(autoincrement())
   name         String
   size         Int
-  location     Location      @relation(fields: [locationId], references: [id])
-  reservations Reservation[]
   locationId   Int
+  reservations Reservation[]
+  location     Location      @relation(fields: [locationId], references: [id])
+  details      String
+
+  @@index([locationId], map: "Room_locationId_fkey")
 }
 
 model Reservation {
-  id     Int  @id
-  roomId Int
-  Room   Room @relation(fields: [roomId], references: [id])
-  userId Int
-  user   User @relation(fields: [userId], references: [id])
-
-  details String @db.VarChar(200)
+  id         Int         @id @default(autoincrement())
+  roomId     Int
+  userId     Int
   startTime  DateTime
+  details    String      @db.VarChar(200)
   length     Int
   Recurrence Recurrence?
+  Room       Room        @relation(fields: [roomId], references: [id])
+  user       User        @relation(fields: [userId], references: [id])
+
+  @@index([roomId], map: "Reservation_roomId_fkey")
+  @@index([userId], map: "Reservation_userId_fkey")
 }
 
 model Location {
   id    Int    @id @default(autoincrement())
+  name  String @unique @db.VarChar(50)
   rooms Room[]
-  name  String
 }
 
 model Recurrence {
   id            Int         @id @default(autoincrement())
   reservationId Int         @unique
-  frequency     String // e.g. 'daily', 'weekly', 'monthly'
-  interval      Int // e.g., every 1 freq, every 2 weeks/days/months
+  frequency     String
+  interval      Int
   endDate       DateTime
   reservation   Reservation @relation(fields: [reservationId], references: [id])
 }
