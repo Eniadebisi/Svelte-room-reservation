@@ -1,9 +1,9 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { websiteName } from "$lib/settings";
-  import type { ActionData, PageData } from "./$types";
+  import type { ActionData } from "./$types";
 
-  export let data: PageData;
+  export let data;
   let showPW = false;
   function togglePW() {
     showPW = !showPW;
