@@ -17,7 +17,7 @@ export async function signUp(email, name, password, role) {
         email,
         name,
         password: await bcrypt.hash(password, 10),
-        role: !role ? 1 : parseInt(role),
+        role: !role ? 0 : parseInt(role),
       },
     });
     return { user };
@@ -42,7 +42,7 @@ export async function checkSignIn(email, password) {
   if (!passwordIsValid) return { error: "Incorrect password" };
 
   // Check if user role is exist
-  if (!(user.role >= 0)) return { error: "User restricted" };
+  if (!(user.role > 0)) return { error: "User restricted" };
 
   const jwtUser = {
     id: user.id,
@@ -57,4 +57,21 @@ export async function checkSignIn(email, password) {
 export async function getUsers() {
   const users = await prisma.user.findMany()
   return users
+}
+
+export async function setUserRole(id, role) {
+  
+  const user = await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      role: role
+    }
+  }).catch((e) => {
+    logger.error(e.message);
+  });
+
+  logger.info(`Edited ${id} to ${role}`);
+  return "Success";
 }
