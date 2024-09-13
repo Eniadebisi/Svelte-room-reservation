@@ -4,7 +4,7 @@
   import type { ActionData, PageData } from "./$types";
   import { goto } from "$app/navigation";
 
-  export let data: PageData;
+  // export let data: PageData;
   let showPW = false;
   function togglePW() {
     showPW = !showPW;

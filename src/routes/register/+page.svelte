@@ -7,7 +7,6 @@
   function togglePW() {
     showPW = !showPW;
   }
-  export let form: ActionData;
 </script>
 
 <div class="fullHeight d-flex align-items-center flex-column justify-content-center row-gap">
