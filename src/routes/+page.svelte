@@ -2,6 +2,7 @@
   import { enhance } from "$app/forms";
   import { websiteName } from "$lib/settings";
   import type { ActionData, PageData } from "./$types";
+  import { goto } from "$app/navigation";
 
   export let data: PageData;
   let showPW = false;
@@ -33,5 +34,8 @@
     {/if}
 
     <button>Sign In</button>
+    <button type="button" on:click={() => {
+      goto("/register")
+    }}>Register</button>
   </form>
 </div>

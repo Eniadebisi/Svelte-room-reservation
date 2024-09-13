@@ -1,9 +1,6 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
-  import { websiteName } from "$lib/settings";
   import type { ActionData } from "./$types";
-
-  export let data;
   let showPW = false;
   function togglePW() {
     showPW = !showPW;
@@ -12,7 +9,7 @@
 </script>
 
 <div class="fullHeight d-flex align-items-center flex-column justify-content-center row-gap">
-  <h1 class="text-center display-1">Register New User</h1>
+  <h1 class="text-center display-1">Register</h1>
 
   <form
     class="container-sm text-center"

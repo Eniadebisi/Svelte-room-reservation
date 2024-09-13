@@ -17,8 +17,12 @@
       <a class="nav-link" href="/register">Register User</a>
       <a class="nav-link" href="/profile">Profile</a>
     </div>
-    <div class="h-100">{data.user.name}
-        ({data.user.role})
+    <div class="h-100">
+      {data.user.name}
+      ({data.user.role})
+      <form action="/signOut?" method="POST">
+        <button><i class="bi bi-box-arrow-right"></i></button>
+      </form>
     </div>
   </div>
 </div>
