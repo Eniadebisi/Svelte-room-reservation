@@ -53,11 +53,12 @@ export const actions: Actions = {
       .tz(timeZone);
     console.log(startTime);
 
-    const { error } = await reserveRoom(roomId, userId, startTime, eventDetails, length);
+    const { error } = await reserveRoom(roomId, userId, startTime, eventTitle, eventDetails, length);
     if (error) {
       return fail(401, {
         error,
       });
     }
+    return {success: true}
   },
 };

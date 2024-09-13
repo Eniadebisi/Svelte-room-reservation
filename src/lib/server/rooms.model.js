@@ -103,13 +103,14 @@ export async function editLocation(locationId, name) {
   }
 }
 
-export async function reserveRoom(roomId, userId, startTime, details, length) {
+export async function reserveRoom(roomId, userId, startTime, title, details, length) {
   try {
     await prisma.reservation.create({
       data: {
         roomId,
         userId,
         startTime,
+        title,
         details,
         length,
       },

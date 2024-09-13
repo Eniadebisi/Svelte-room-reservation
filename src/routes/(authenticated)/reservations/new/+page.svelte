@@ -5,6 +5,7 @@
   import utc from "dayjs/plugin/utc";
   dayjs.extend(utc);
   import timezone from "dayjs/plugin/timezone";
+  import { Notifications, acts } from "@tadashi/svelte-notification";
   dayjs.extend(timezone);
 
   /** @type {import('./$types').PageData} */
@@ -54,12 +55,12 @@
     </div>
     <div class="m-3">
       <label for="eventTitle">Event Title</label>
-      <input type="text" name="eventTitle" id="eventTitle" required />
+      <input type="text" name="eventTitle" id="eventTitle" maxlength="50" required />
     </div>
 
     <div class="m-3">
       <label for="eventDetails" class="align-top">Event Details</label>
-      <textarea name="eventDetails" id="eventDetails" required />
+      <textarea name="eventDetails" id="eventDetails" maxlength="200" required />
     </div>
 
     <input type="hidden" name="userId" value={data.user.id} />
@@ -74,3 +75,5 @@
     <button>Submit</button>
   </form>
 </div>
+
+<Notifications />

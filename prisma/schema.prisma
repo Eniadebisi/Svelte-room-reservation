@@ -33,6 +33,7 @@ model Reservation {
   roomId     Int
   userId     Int
   startTime  DateTime
+  title    String      @db.VarChar(50)
   details    String      @db.VarChar(200)
   length     Int
   Recurrence Recurrence?
