@@ -1,6 +1,5 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { sampleLocations, sampleRooms, sampleReservations } from "$lib/assets/sample";
   import dayjs from "dayjs";
   import AdvancedFormat from "dayjs/plugin/advancedFormat";
   dayjs.extend(AdvancedFormat);

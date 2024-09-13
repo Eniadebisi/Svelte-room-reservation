@@ -1,4 +1,3 @@
-import { sampleLocations, sampleRooms } from "$lib/assets/sample";
 import { editLocation, editRoom, getLocations, getRooms, newLocation, newRoom } from "$lib/server/rooms.model";
 import { fail } from "@sveltejs/kit";
 import type { PageServerLoad } from "./$types";
