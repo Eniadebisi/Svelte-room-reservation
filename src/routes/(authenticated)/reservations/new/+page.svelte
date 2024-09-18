@@ -88,7 +88,7 @@
       <label for="eventDetails" class="align-top">Event Details</label>
       <textarea name="eventDetails" id="eventDetails" maxlength="200" required />
     </div>
-    {getWeekText(date)}
+    <!-- {getWeekText(date)}
     <div class="m-3">
       <label for="recurrence">Make Recurring: </label>
       <select name="recurrence" id="recurrence">
@@ -102,7 +102,7 @@
 
     {#if recurring}
       <select name="" id=""></select>
-    {/if}
+    {/if} -->
 
     <input type="hidden" name="userId" value={data.user.id} />
     <br />
