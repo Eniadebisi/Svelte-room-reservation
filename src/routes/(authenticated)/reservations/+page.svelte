@@ -16,7 +16,7 @@
   let resvObj: { id: Number; title: String; details: String; startTime: Date; length: number };
 
   async function updateReserv(nDate: Date) {
-    const response = await fetch("/api/userRoleChange", {
+    const response = await fetch("/api/reservationData", {
       method: "POST",
       body: JSON.stringify({ nDate }),
       headers: {
@@ -96,8 +96,7 @@
     </div>
   </div>
 </div>
-{resvEditModal}
-{resvObj}
+
 <ReservationDetails bind:showModal={modalOpen} {resvObj} bind:resvEditModal={resvEditModal} on:close={() => (modalOpen = false)} />
 
 <ReservationEdit bind:showModal={resvEditModal} {resvObj} />

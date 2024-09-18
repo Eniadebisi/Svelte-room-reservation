@@ -33,7 +33,7 @@ model Reservation {
   roomId     Int
   userId     Int
   startTime  DateTime
-  title    String      @db.VarChar(50)
+  title      String      @db.VarChar(50)
   details    String      @db.VarChar(200)
   length     Int
   Recurrence Recurrence?
@@ -53,8 +53,9 @@ model Location {
 model Recurrence {
   id            Int         @id @default(autoincrement())
   reservationId Int         @unique
+  reservation   Reservation @relation(fields: [reservationId], references: [id])
   frequency     String
   interval      Int
+  dayOfWeek     String
   endDate       DateTime
-  reservation   Reservation @relation(fields: [reservationId], references: [id])
 }
