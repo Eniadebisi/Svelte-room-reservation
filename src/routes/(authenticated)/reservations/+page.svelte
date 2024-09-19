@@ -86,7 +86,7 @@
                     modalOpen = true;
                     $: resvObj = resv;
                   }}
-                  style="width: {85 * resv.length}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;">{resv.title}</button
+                  style="width: {(85 * resv.length)/2}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;">{resv.title}</button
                 >
               {/each}
             </div>
