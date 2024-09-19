@@ -13,7 +13,8 @@
   let modalOpen = false;
   let resvEditModal = false;
 
-  let resvObj: { id: Number; title: String; details: String; startTime: Date; length: number };
+  let resvObj: any;
+  // : { id: Number; title: String; details: String; startTime: Date; length: number }
 
   async function updateReserv(nDate: Date) {
     const response = await fetch("/api/reservationData", {
@@ -35,10 +36,16 @@
   <div class="container text-center mb-2">
     <div class="row align-items-start">
       <div class="col">
-        <input type="date" name="date" id="date" bind:value={date}  on:change={() => {
-          updateReserv(date);
-          staticDate = dayjs(date).format("YYYY-MM-DD");
-        }}/>
+        <input
+          type="date"
+          name="date"
+          id="date"
+          bind:value={date}
+          on:change={() => {
+            updateReserv(date);
+            staticDate = dayjs(date).format("YYYY-MM-DD");
+          }}
+        />
       </div>
       <div class="col">
         <a href="reservations/new">
@@ -84,9 +91,9 @@
                   class="reservation"
                   on:click={() => {
                     modalOpen = true;
-                    $: resvObj = resv;
+                    resvObj = resv;
                   }}
-                  style="width: {(85 * resv.length)/2}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;">{resv.title}</button
+                  style="width: {(85 * resv.length) / 2}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;">{resv.title}</button
                 >
               {/each}
             </div>
@@ -97,10 +104,16 @@
   </div>
 </div>
 
-<ReservationDetails bind:showModal={modalOpen} {resvObj} bind:resvEditModal={resvEditModal} on:close={() => (modalOpen = false)} />
+  <ReservationDetails bind:showModal={modalOpen} {resvObj} bind:resvEditModal on:close={() => (modalOpen = false)} />
 
-<ReservationEdit bind:showModal={resvEditModal} {resvObj} />
-
+  <ReservationEdit
+    bind:showModal={resvEditModal}
+    {resvObj}
+    on:close={() => {
+      resvEditModal = false;
+      resvObj = null;
+    }}
+  />
 
 <style>
   .rowStart {

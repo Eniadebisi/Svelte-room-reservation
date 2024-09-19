@@ -17,7 +17,7 @@ export async function signUp(email, name, password, role) {
         email,
         name,
         password: await bcrypt.hash(password, 10),
-        role: !role ? 0 : parseInt(role),
+        role,
       },
     });
     return { user };

@@ -24,7 +24,18 @@
         <h3 class="">{resvObj.title}</h3>
         <div class="mt-2 px-7 py-3">
           Details: {resvObj.details}
-          Time: {(dayjs(resvObj.startTime).hour() * 100 + dayjs(resvObj.startTime).minute()).toString().padStart(4, "0")} - {(dayjs(resvObj.startTime).hour() * 100 + resvObj.length * 100 + dayjs(resvObj.startTime).minute()).toString().padStart(4, "0")}
+          <br>
+          Time: {(dayjs(resvObj.startTime).hour() * 100 + dayjs(resvObj.startTime).minute()).toString().padStart(4, "0")} - {(
+            dayjs(resvObj.startTime)
+              .add(resvObj.length * 30, "minute")
+              .hour() *
+              100 +
+            dayjs(resvObj.startTime)
+              .add(resvObj.length * 30, "minute")
+              .minute()
+          )
+            .toString()
+            .padStart(4, "0")}
         </div>
         <div class="items-center px-4 py-3">
           <button on:click={closeModal} class=""> Close </button>

@@ -15,7 +15,7 @@ export const actions: Actions = {
     const email = data.email;
     const password = data.password;
     const name = data.name;
-    const role = data.role;
+    const role = data.role ? parseInt(data.role.toString()) : 0;
 
     if (!email || !password) {
       return fail(400, {

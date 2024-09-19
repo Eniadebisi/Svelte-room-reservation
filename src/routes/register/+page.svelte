@@ -1,12 +1,14 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { goto } from "$app/navigation";
-  import type { ActionData } from "./$types";
+  export let data;
   let showPW = false;
   let error = "";
   function togglePW() {
     showPW = !showPW;
   }
+  console.assert(!!data.user,)
+
 </script>
 
 <div class="fullHeight d-flex align-items-center flex-column justify-content-center row-gap">
@@ -16,12 +18,12 @@
     class="container-sm text-center"
     action="?"
     use:enhance={({ formElement, formData, action, cancel, submitter }) => {
-      error = ""
+      error = "";
       let pw = formData.get("password");
       let vPw = formData.get("verifyPassword");
       if (pw !== vPw) {
         console.log(pw, vPw);
-        
+
         cancel();
         error = "Passwords don't match";
         return;
@@ -44,7 +46,7 @@
   >
     <div class="input-group mb-3 align-middle">
       <span class="input-group-text" id="basic-addon1">A</span>
-      <input spellcheck="false" name="name" type="name" class="form-control" placeholder="Full Name" aria-label="Name" aria-describedby="basic-addon1" required/>
+      <input spellcheck="false" name="name" type="name" class="form-control" placeholder="Full Name" aria-label="Name" aria-describedby="basic-addon1" required />
     </div>
 
     <div class="input-group mb-3 align-middle">
@@ -62,17 +64,19 @@
 
     <div class="input-group mb-3 align-middle">
       <span class="input-group-text" id="basic-addon1">**</span>
-      <input class="form-control" type="password" name="verifyPassword" placeholder="Verify Password"  required/>
+      <input class="form-control" type="password" name="verifyPassword" placeholder="Verify Password" required />
     </div>
 
-    <div class="input-group mb-3 align-middle">
-      <select class="form-control" name="role" id="role" required>
-        <option selected disabled value=-1>Select a role...</option>
-        <option value="2">Admin</option>
-        <option value="1">User</option>
-        <option value="0">Guest</option>
-      </select>
-    </div>
+    {#if data.user.role > 2}
+      <div class="input-group mb-3 align-middle">
+        <select class="form-control" name="role" id="role" required>
+          <option selected disabled value="0">Select a role...</option>
+          <option value="2">Admin</option>
+          <option value="1">User</option>
+          <option value="0">Guest</option>
+        </select>
+      </div>
+    {/if}
 
     {#if error}
       <div class="notice error m-2">
