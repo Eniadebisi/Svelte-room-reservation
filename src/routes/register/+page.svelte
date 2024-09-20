@@ -7,8 +7,7 @@
   function togglePW() {
     showPW = !showPW;
   }
-  console.assert(!!data.user,)
-
+  let showRole = data.user ? (data.user.role > 2 ? true : false) : true;
 </script>
 
 <div class="fullHeight d-flex align-items-center flex-column justify-content-center row-gap">
@@ -26,13 +25,6 @@
 
         cancel();
         error = "Passwords don't match";
-        return;
-      }
-
-      let role = formData.get("role");
-      if (!role) {
-        cancel();
-        error = "Please select a role";
         return;
       }
 
@@ -67,16 +59,14 @@
       <input class="form-control" type="password" name="verifyPassword" placeholder="Verify Password" required />
     </div>
 
-    {#if data.user.role > 2}
-      <div class="input-group mb-3 align-middle">
-        <select class="form-control" name="role" id="role" required>
-          <option selected disabled value="0">Select a role...</option>
-          <option value="2">Admin</option>
-          <option value="1">User</option>
-          <option value="0">Guest</option>
-        </select>
-      </div>
-    {/if}
+    <div class="input-group mb-3 align-middle" hidden={showRole}>
+      <select class="form-control" name="role" id="role" required>
+        <option selected disabled value="0">Select a role...</option>
+        <option value="2">Admin</option>
+        <option value="1">User</option>
+        <option value="0">Guest</option>
+      </select>
+    </div>
 
     {#if error}
       <div class="notice error m-2">
