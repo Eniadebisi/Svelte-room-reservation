@@ -7,6 +7,7 @@
   function togglePW() {
     showPW = !showPW;
   }
+  export let form
   let showRole = data.user ? (data.user.role > 2 ? true : false) : true;
 </script>
 
@@ -70,7 +71,11 @@
 
     {#if error}
       <div class="notice error m-2">
-        Error: + {error}
+        Error: {error}
+      </div>
+    {:else if form?.error}
+      <div class="notice error m-2">
+        Error: {form.error}
       </div>
     {/if}
 
