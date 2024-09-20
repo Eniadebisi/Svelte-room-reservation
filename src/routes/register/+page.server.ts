@@ -30,5 +30,6 @@ export const actions: Actions = {
         error,
       });
     }
+    redirect(302, "/");
   },
 };
