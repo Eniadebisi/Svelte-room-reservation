@@ -50,8 +50,9 @@ export const actions: Actions = {
       .minute(parseInt(timeStartHH) % 100)
       .second(0)
       .millisecond(0)
-      .tz(timeZone);
-    console.log(startTime);
+      .tz(timeZone)
+      .utc();
+    // console.log(startTime);
 
     const { error } = await reserveRoom(roomId, userId, startTime, eventTitle, eventDetails, length);
     if (error) {

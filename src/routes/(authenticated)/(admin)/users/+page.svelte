@@ -33,6 +33,7 @@
           
         <td>
           <select name="role" id="role" on:change={(e) => handleRoleChange(e, user.role, user.id)} value={user.role}>
+            <option value={0}>Guest</option>
             <option value={1}>User</option>
             <option value={2}>Admin</option>
             <option value={3}>Owner</option>

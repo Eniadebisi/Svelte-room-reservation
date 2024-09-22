@@ -60,31 +60,24 @@ export async function newLocation(name) {
 }
 export async function editRoom(roomId, uname, usize, ulocationId, udetails) {
   try {
-    if (uname && uname != "") {
-      await prisma.room.update({
+    await prisma.$transaction([
+      prisma.room.update({
         where: { id: roomId },
-        data: { name: uname.toString() },
-      });
-    }
-
-    if (usize > 0) {
-      await prisma.room.update({
+        data: uname && uname !== "" ? { name: uname.toString() } : {},
+      }),
+      prisma.room.update({
         where: { id: roomId },
-        data: { size: usize },
-      });
-    }
-    if (ulocationId && ulocationId != "") {
-      await prisma.room.update({
+        data: usize > 0 ? { size: usize } : {},
+      }),
+      prisma.room.update({
         where: { id: roomId },
-        data: { locationId: ulocationId },
-      });
-    }
-    if (udetails && udetails != "") {
-      await prisma.room.update({
+        data: ulocationId && ulocationId !== "" ? { locationId: ulocationId } : {},
+      }),
+      prisma.room.update({
         where: { id: roomId },
-        data: { details: udetails },
-      });
-    }
+        data: udetails && udetails !== "" ? { details: udetails } : {},
+      }),
+    ]);
     return { error: false };
   } catch (e) {
     return { error: e.message };
@@ -118,5 +111,32 @@ export async function reserveRoom(roomId, userId, startTime, title, details, len
     return { error: false };
   } catch (e) {
     return { error: e.message };
+  }
+}
+
+
+
+export async function delReservation(id) {
+  try {
+      const reservation = await prisma.reservation.findUnique({
+          where: {
+              id
+          }
+      });
+
+      if (!reservation) {
+          throw new Error(`Reservation with id ${reservationId} does not exist.`);
+      }
+      
+      await prisma.reservation.delete({
+        where: {
+          id
+        }
+      })
+
+      return { success: true, message: `Reservation with ID ${reservationId} deleted successfully` };
+  } catch (error) {
+      logger.error(`Error deleting reservation: ${error}`);
+      return { success: false, message: `Failed to delete reservation with ID ${reservationId}` };
   }
 }

@@ -104,16 +104,16 @@
   </div>
 </div>
 
-  <ReservationDetails bind:showModal={modalOpen} {resvObj} bind:resvEditModal on:close={() => (modalOpen = false)} />
+<ReservationDetails bind:showModal={modalOpen} {resvObj} bind:resvEditModal on:close={() => (modalOpen = false)} />
 
-  <ReservationEdit
-    bind:showModal={resvEditModal}
-    {resvObj}
-    on:close={() => {
-      resvEditModal = false;
-      resvObj = null;
-    }}
-  />
+<ReservationEdit
+  bind:showModal={resvEditModal}
+  {resvObj}
+  on:close={() => {
+    resvEditModal = false;
+    resvObj = null;
+  }}
+/>
 
 <style>
   .rowStart {
