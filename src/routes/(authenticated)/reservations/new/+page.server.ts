@@ -52,7 +52,6 @@ export const actions: Actions = {
       .millisecond(0)
       .tz(timeZone)
       .utc();
-    // console.log(startTime);
 
     const { error } = await reserveRoom(roomId, userId, startTime, eventTitle, eventDetails, length);
     if (error) {
