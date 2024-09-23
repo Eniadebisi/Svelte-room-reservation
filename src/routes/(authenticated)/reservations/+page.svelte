@@ -24,10 +24,10 @@
         "Content-Type": "application/json",
       },
     });
-    const { reservations: resv } = await response.json().finally(() => {
-      console.log(resv);
-    });
+    const { reservations: resv } = await response.json();
+    
     reservations = resv;
+    await console.log(resv);
   }
 </script>
 
