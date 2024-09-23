@@ -1,6 +1,5 @@
 <script lang="ts">
   import { fade, scale } from "svelte/transition";
-  import { createEventDispatcher } from "svelte";
   import dayjs from "dayjs";
 
   export let showModal = false;
@@ -24,6 +23,8 @@
         <h3 class="">{resvObj.title}</h3>
         <div class="mt-2 px-7 py-3">
           Details: {resvObj.details}
+          <br>
+          Date: {dayjs(resvObj.startTime).toISOString()}
           <br>
           Time: {(dayjs(resvObj.startTime).hour() * 100 + dayjs(resvObj.startTime).minute()).toString().padStart(4, "0")} - {(
             dayjs(resvObj.startTime)

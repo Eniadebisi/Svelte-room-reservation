@@ -17,6 +17,7 @@
   // : { id: Number; title: String; details: String; startTime: Date; length: number }
 
   async function updateReserv(nDate: Date) {
+    nDate =  new Date(nDate)
     const response = await fetch("/api/reservationData", {
       method: "POST",
       body: JSON.stringify({ nDate }),

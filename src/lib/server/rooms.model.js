@@ -8,13 +8,14 @@ import timezone from "dayjs/plugin/timezone";
 dayjs.extend(timezone);
 
 export async function getReservations(date) {
-  const start = dayjs(date).tz(timeZone).hour(0).minute(0).second(0);
-  const end = dayjs(date).tz(timeZone).hour(23).minute(59).second(59);
+  const start = new Date(dayjs(date).hour(0).minute(0).second(0));
+  const end = new Date(dayjs(date).hour(23).minute(59).second(59));
 
   let reservations = await prisma.reservation.findMany({
     where: { startTime: { gte: start, lte: end } },
   });
 
+  // console.log("Got dates between " + start + " and " + end + " based on " + date)
   return { reservations, error: false };
 }
 export async function getRooms() {
