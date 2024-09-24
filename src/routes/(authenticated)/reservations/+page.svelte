@@ -7,7 +7,7 @@
   import ReservationEdit from "$lib/ReservationEdit.svelte";
 
   export let data: PageData;
-  let date = data.date ? new Date(data.date) : new Date();
+  let date = new Date();
   let staticDate = dayjs(date).format("YYYY-MM-DD");
   let reservations = data.reservations;
   let modalOpen = false;

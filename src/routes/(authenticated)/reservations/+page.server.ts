@@ -6,14 +6,6 @@ import dayjs from "dayjs";
 
 export async function load({parent, url}) {
   const {user} = await parent()
-  let dateCheck = url.searchParams.get("date");
-  
-  let date;
-  if (!dateCheck) {
-    date = new Date();
-  } else {
-    date = dayjs(dateCheck).toString();
-  }
 
   const {rooms, error: roomError} = (await getRooms());
   if (roomError || !rooms) throw new Error();
@@ -21,8 +13,8 @@ export async function load({parent, url}) {
   const {locations, error: locError} = (await getLocations());
   if (locError || !locations) throw new Error();
   
-  const { reservations, error: reservError } = await getReservations(date);
+  const { reservations, error: reservError } = await getReservations(dayjs(new Date()).tz(timeZone));
   if (reservError || !reservations) throw new Error();
   
-  return {user, date, rooms, locations, reservations};
+  return {user, rooms, locations, reservations};
 }
