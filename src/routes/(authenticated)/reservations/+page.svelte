@@ -5,6 +5,9 @@
   dayjs.extend(AdvancedFormat);
   import ReservationDetails from "$lib/ReservationDetails.svelte";
   import ReservationEdit from "$lib/ReservationEdit.svelte";
+  import { timeZone } from "$lib/settings";
+  import timezone from "dayjs/plugin/timezone";
+  dayjs.extend(timezone);
 
   export let data: PageData;
   let date = new Date();
@@ -16,8 +19,7 @@
   let resvObj: any;
   // : { id: Number; title: String; details: String; startTime: Date; length: number }
 
-  async function updateReserv(nDate: Date) {
-    nDate =  new Date(nDate)
+  async function updateReserv(nDate) {
     const response = await fetch("/api/reservationData", {
       method: "POST",
       body: JSON.stringify({ nDate }),
@@ -26,14 +28,14 @@
       },
     });
     const { reservations: resv } = await response.json();
-    
+
     reservations = resv;
     await console.log(resv);
   }
 </script>
 
 <div class="px-4 py-1 mt-1 text-center d-flex flex-column align-items-center">
-  <h1 class="mb-3">Reservations for {dayjs(staticDate).format("ddd, MMM Do")}</h1>
+  <h1 class="mb-3">Reservations for {dayjs(date).format("ddd, MMM Do")}</h1>
 
   <div class="container text-center mb-2">
     <div class="row align-items-start">
@@ -42,10 +44,10 @@
           type="date"
           name="date"
           id="date"
-          bind:value={date}
+          bind:value={staticDate}
           on:change={() => {
             updateReserv(date);
-            staticDate = dayjs(date).format("YYYY-MM-DD");
+            // staticDate = dayjs(date).format("YYYY-MM-DD");
           }}
         />
       </div>
