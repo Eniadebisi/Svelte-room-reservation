@@ -1,14 +1,14 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { getLocations, getRooms, newRoom, reserveRoom } from "$lib/server/rooms.model";
+import { getLocations, getRooms, reserveRoom } from "$lib/server/rooms.model";
 import type { Actions } from "./$types";
 import { timeZone } from "$lib/settings";
 
 import dayjs from "dayjs";
 import utc from "dayjs/plugin/utc";
-dayjs.extend(utc);
 import timezone from "dayjs/plugin/timezone";
-dayjs.extend(timezone);
 import AdvancedFormat from "dayjs/plugin/advancedFormat";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 dayjs.extend(AdvancedFormat);
 
 export const load = async ({ parent }) => {
@@ -27,13 +27,13 @@ export const actions: Actions = {
 
     const roomId = parseInt(data.roomId.toString());
     const userId = parseInt(data.userId.toString());
-    const startTime = data.startTime.toString();
+    const date = new Date(data.date.toString());
     const timeStartHH = data.timeStart.toString();
     const timeEndHH = data.timeEnd.toString();
     const eventTitle = data.eventTitle;
     const eventDetails = data.eventDetails;
 
-    if (!roomId || !startTime || !timeStartHH || !timeEndHH || !eventTitle || !eventDetails) {
+    if (!roomId || !date || !timeStartHH || !timeEndHH || !eventTitle || !eventDetails) {
       return fail(401, {
         error: "Missing one or more details",
       });
@@ -46,13 +46,21 @@ export const actions: Actions = {
     }
 
     let length = Math.round((parseInt(timeEndHH) - parseInt(timeStartHH)) / 100) * 2 + ((parseInt(timeEndHH) - parseInt(timeStartHH)) % 100 > 0 ? 1 : 0);
-
-    const { error } = await reserveRoom(roomId, userId, startTime, eventTitle, eventDetails, length);
+    let startTime = dayjs(date)
+    .hour(parseInt(timeStartHH) / 100)
+    .minute(parseInt(timeStartHH) % 100)
+    .second(0)
+    .millisecond(0)
+    .tz(timeZone)
+    .add(1, 'day')
+    .toISOString()
+    
+    const { error } = await reserveRoom(roomId, userId, startTime, length, eventTitle, eventDetails);
     if (error) {
       return fail(401, {
         error,
       });
     }
-    return { success: true, startTime };
+    return { success: true };
   },
 };

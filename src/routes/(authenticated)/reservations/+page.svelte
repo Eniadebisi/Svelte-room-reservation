@@ -1,5 +1,7 @@
 <script lang="ts">
   import type { PageData } from "./$types";
+  import { Modals, closeModal, openModal, modals } from "svelte-modals";
+
   import dayjs from "dayjs";
   import AdvancedFormat from "dayjs/plugin/advancedFormat";
   dayjs.extend(AdvancedFormat);
@@ -30,7 +32,20 @@
     const { reservations: resv } = await response.json();
 
     reservations = resv;
-    await console.log(resv);
+  }
+  function openResvervationDetails(resvObj: reservationObject) {
+    openModal(ReservationDetails, {
+      resvObj,
+      openEditResv: () => {
+        openReservationEdit(resvObj);
+      },
+    });
+  }
+  function openReservationEdit(resvObj: reservationObject) {
+    openModal(ReservationEdit, { resvObj });
+  }
+  function newReservation() {
+    openModal(NewReservation, {rooms: data.rooms, user: data.user});
   }
 </script>
 
@@ -40,6 +55,16 @@
   <div class="container text-center mb-2">
     <div class="row align-items-start">
       <div class="col">
+        <button
+          type="button"
+          on:click={() => {
+            date = dayjs(date).add(-1, "day").toDate();
+            staticDate = dayjs(date).format("YYYY-MM-DD");
+            updateReserv(date);
+          }}
+        >
+          <i class="bi bi-caret-left"></i>
+        </button>
         <input
           type="date"
           name="date"
@@ -47,9 +72,16 @@
           bind:value={staticDate}
           on:change={() => {
             updateReserv(date);
-            // staticDate = dayjs(date).format("YYYY-MM-DD");
           }}
         />
+        <button type="button"
+          on:click={() => {
+            date = dayjs(date).add(1, "day").toDate();
+            staticDate = dayjs(date).format("YYYY-MM-DD");
+            updateReserv(date);
+          }}>
+          <i class="bi bi-caret-right"></i>
+        </button>
       </div>
       <div class="col">
         <a href="reservations/new">
@@ -94,8 +126,7 @@
                 <button
                   class="reservation"
                   on:click={() => {
-                    modalOpen = true;
-                    resvObj = resv;
+                    openResvervationDetails(resv);
                   }}
                   style="width: {(85 * resv.length) / 2}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;">{resv.title}</button
                 >

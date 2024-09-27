@@ -1,14 +1,13 @@
 <script lang="ts">
   import { enhance } from "$app/forms";
   import { timeZone } from "$lib/settings";
-  import { Notifications, acts } from "@tadashi/svelte-notification";
 
   import dayjs from "dayjs";
   import utc from "dayjs/plugin/utc";
-  dayjs.extend(utc);
   import timezone from "dayjs/plugin/timezone";
-  dayjs.extend(timezone);
   import AdvancedFormat from "dayjs/plugin/advancedFormat";
+  dayjs.extend(utc);
+  dayjs.extend(timezone);
   dayjs.extend(AdvancedFormat);
 
   /** @type {import('./$types').PageData} */
@@ -18,7 +17,6 @@
   export let form;
 
   let date: Date = new Date();
-  let startTime: string = dayjs(new Date()).toISOString();
   let timeStartHH: string = "0600";
   let recurring = false;
   let weekday = date;
@@ -60,46 +58,12 @@
 
     <div class="m-3">
       <label for="date">Date</label>
-      <input
-        type="date"
-        name="date"
-        id="date"
-        bind:value={date}
-        on:change={(e) => {
-          startTime = dayjs(date)
-            .hour(parseInt(timeStartHH) / 100)
-            .minute(parseInt(timeStartHH) % 100)
-            .second(0)
-            .millisecond(0)
-            .tz(timeZone)
-            .utc()
-            .toISOString();
-        }}
-        required
-      />
-      <input type="hidden" name="startTime" id="startTime" bind:value={startTime} />
+      <input type="date" name="date" id="date" bind:value={date} required />
     </div>
-
-    <!-- {startTime} -->
 
     <div class="m-3">
       <label for="timeStart">Start Time</label>
-      <select
-        name="timeStart"
-        id="timeStart"
-        bind:value={timeStartHH}
-        on:change={(e) => {
-          startTime = dayjs(date)
-            .hour(parseInt(e.target.value) / 100)
-            .minute(parseInt(e.target.value) % 100)
-            .second(0)
-            .millisecond(0)
-            .tz(timeZone)
-            .utc()
-            .toISOString();
-        }}
-        required
-      >
+      <select name="timeStart" id="timeStart" bind:value={timeStartHH} required>
         {#each Array(36) as _, i}
           <option value={(Math.floor(i / 2) * 100 + 600 + (i % 2) * 30).toString().padStart(4, "0")}>{(Math.floor(i / 2) * 100 + 600 + (i % 2) * 30).toString().padStart(4, "0")}</option>
         {/each}
@@ -158,5 +122,3 @@
     <button>Submit</button>
   </form>
 </div>
-
-<Notifications />

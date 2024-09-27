@@ -7,15 +7,12 @@ dayjs.extend(utc);
 import timezone from "dayjs/plugin/timezone";
 dayjs.extend(timezone);
 
-export async function getReservations(date) {
-  const start = new Date(dayjs(date).hour(0).minute(0).second(0));
-  const end = new Date(dayjs(date).hour(23).minute(59).second(59));
-
+export async function getReservations(start, end) {
   let reservations = await prisma.reservation.findMany({
     where: { startTime: { gte: start, lte: end } },
   });
 
-  // console.log("Got dates between " + start + " and " + end + " based on " + date)
+  // console.log("Got dates between " + dayjs(start).toISOString() + " and " + dayjs(end).toISOString());
   return { reservations, error: false };
 }
 export async function getRooms() {
@@ -97,47 +94,67 @@ export async function editLocation(locationId, name) {
   }
 }
 
-export async function reserveRoom(roomId, userId, startTime, title, details, length) {
+export async function reserveRoom(roomId, userId, startTime, length, title, details) {
   try {
-    await prisma.reservation.create({
-      data: {
-        roomId,
-        userId,
-        startTime,
-        title,
-        details,
-        length,
-      },
-    });
-    return { error: false };
+    // if (checkAvailability(roomId, startTime, endtime)) {
+      await prisma.reservation.create({
+        data: {
+          roomId,
+          userId,
+          startTime,
+          title,
+          details,
+          length,
+        },
+      });
+    //   // console.log(roomId, userId, startTime, endtime, title, details);
+
+      return { error: false };
+    // } else {
+    //   return { error: "Room is not available at that time." };
+    // }
   } catch (e) {
     return { error: e.message };
   }
 }
 
+async function checkAvailability(roomId, start, end) {
+  try {
+    console.log("Check availability " + dayjs(start).toISOString() + "-" + dayjs(end).toISOString());
 
+    let reservations = await prisma.reservation.findFirst({
+      where: { startTime: { gte: start, lte: end } },
+    });
+    console.log(reservations);
+    
+    if (reservations) return false;
+    return false;
+  } catch (e) {
+    return { error: e.message };
+  }
+}
 
 export async function delReservation(id) {
   try {
-      const reservation = await prisma.reservation.findUnique({
-          where: {
-              id
-          }
-      });
+    const reservation = await prisma.reservation.findUnique({
+      where: {
+        id,
+      },
+    });
 
-      if (!reservation) {
-          throw new Error(`Reservation with id ${reservationId} does not exist.`);
-      }
-      
-      await prisma.reservation.delete({
-        where: {
-          id
-        }
-      })
+    if (!reservation) {
+      throw new Error(`Reservation with id ${reservationId} does not exist.`);
+    }
 
-      return { success: true, message: `Reservation with ID ${reservationId} deleted successfully` };
+    await prisma.reservation.delete({
+      where: {
+        id,
+      },
+    });
+
+    return { success: true, message: `Reservation with ID ${reservationId} deleted successfully` };
   } catch (error) {
-      logger.error(`Error deleting reservation: ${error}`);
-      return { success: false, message: `Failed to delete reservation with ID ${reservationId}` };
+    logger.error(`Error deleting reservation: ${error}`);
+    return { success: false, message: `Failed to delete reservation with ID ${reservationId}` };
   }
 }

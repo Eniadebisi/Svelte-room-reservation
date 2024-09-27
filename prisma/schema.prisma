@@ -33,9 +33,10 @@ model Reservation {
   roomId     Int
   userId     Int
   startTime  DateTime
+  endTime    DateTime?
   title      String      @db.VarChar(50)
   details    String      @db.VarChar(200)
-  length     Int
+  length     Int?
   Recurrence Recurrence?
   Room       Room        @relation(fields: [roomId], references: [id])
   user       User        @relation(fields: [userId], references: [id])
