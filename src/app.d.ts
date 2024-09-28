@@ -18,9 +18,12 @@ declare global {
 }
 
 interface reservationObject {
-  id: Number;
-  title: String;
-  details: String;
+  id: number;
+  roomId: number;
+  userId: number;
   startTime: Date;
-  length: number;
+  endTime: Date | null;
+  title: string;
+  details: string;
+  length: number | null;
 }

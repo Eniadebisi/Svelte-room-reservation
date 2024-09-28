@@ -1,27 +1,23 @@
 <script lang="ts">
   import type { PageData } from "./$types";
-  import { Modals, closeModal, openModal, modals } from "svelte-modals";
-
+  import { closeModal, openModal } from "svelte-modals";
+  import { browser } from "$app/environment";
   import dayjs from "dayjs";
-  import AdvancedFormat from "dayjs/plugin/advancedFormat";
-  dayjs.extend(AdvancedFormat);
   import ReservationDetails from "$lib/ReservationDetails.svelte";
   import ReservationEdit from "$lib/ReservationEdit.svelte";
   import { timeZone } from "$lib/settings";
-  import timezone from "dayjs/plugin/timezone";
-  dayjs.extend(timezone);
+  import NewReservation from "$lib/newReservation.svelte";
+  import type { Reservation } from "@prisma/client";
+  import { goto, invalidate, invalidateAll } from "$app/navigation";
+  import { redirect } from "@sveltejs/kit";
 
   export let data: PageData;
   let date = new Date();
   let staticDate = dayjs(date).format("YYYY-MM-DD");
   let reservations = data.reservations;
-  let modalOpen = false;
-  let resvEditModal = false;
 
-  let resvObj: any;
-  // : { id: Number; title: String; details: String; startTime: Date; length: number }
-
-  async function updateReserv(nDate) {
+  async function updateReserv(nDate: Date) {
+    // dayjs(nDate).startOf("day"), dayjs(nDate).endOf("day")
     const response = await fetch("/api/reservationData", {
       method: "POST",
       body: JSON.stringify({ nDate }),
@@ -29,29 +25,47 @@
         "Content-Type": "application/json",
       },
     });
-    const { reservations: resv } = await response.json();
-
+    const { reservations: resv, start, end } = await response.json();
     reservations = resv;
   }
-  function openResvervationDetails(resvObj: reservationObject) {
+  function openResvervationDetails(resvObj: Reservation) {
     openModal(ReservationDetails, {
       resvObj,
       openEditResv: () => {
+        closeModal();
         openReservationEdit(resvObj);
       },
     });
   }
-  function openReservationEdit(resvObj: reservationObject) {
-    openModal(ReservationEdit, { resvObj });
+  function openReservationEdit(resvObj: Reservation) {
+    openModal(ReservationEdit, {
+      resvObj,
+      rooms: data.rooms,
+      user: data.user,
+      refresh: () => {
+        if (browser) {
+          window.location.href = "/";
+        }
+        closeModal();
+      },
+    });
   }
   function newReservation() {
-    openModal(NewReservation, {rooms: data.rooms, user: data.user});
+    openModal(NewReservation, {
+      rooms: data.rooms,
+      user: data.user,
+      refresh: () => {
+        if (browser) {
+          window.location.href = "/";
+        }
+        closeModal();
+      },
+    });
   }
 </script>
 
 <div class="px-4 py-1 mt-1 text-center d-flex flex-column align-items-center">
-  <h1 class="mb-3">Reservations for {dayjs(date).format("ddd, MMM Do")}</h1>
-
+  <h1 class="col mb-3">Reservations</h1>
   <div class="container text-center mb-2">
     <div class="row align-items-start">
       <div class="col">
@@ -74,19 +88,19 @@
             updateReserv(date);
           }}
         />
-        <button type="button"
+        <button
+          type="button"
           on:click={() => {
             date = dayjs(date).add(1, "day").toDate();
             staticDate = dayjs(date).format("YYYY-MM-DD");
             updateReserv(date);
-          }}>
+          }}
+        >
           <i class="bi bi-caret-right"></i>
         </button>
       </div>
       <div class="col">
-        <a href="reservations/new">
-          <button type="button"> New Reservation </button>
-        </a>
+        <button type="button" on:click={newReservation}> New Reservation </button>
       </div>
     </div>
   </div>
@@ -128,8 +142,10 @@
                   on:click={() => {
                     openResvervationDetails(resv);
                   }}
-                  style="width: {(85 * resv.length) / 2}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;">{resv.title}</button
+                  style="width: {resv.endTime ? (85 / 2) * (dayjs(resv.endTime).diff(resv.startTime, 'minute') / 30) : resv.length ? (85 * resv.length) / 2 : 85}px;margin-left: {85 * dayjs(resv.startTime).hour() + (dayjs(resv.startTime).minute() / 60) * 85 - 6 * 85}px;"
                 >
+                  {resv.title}
+                </button>
               {/each}
             </div>
           {/each}
@@ -139,22 +155,10 @@
   </div>
 </div>
 
-<ReservationDetails bind:showModal={modalOpen} {resvObj} bind:resvEditModal on:close={() => (modalOpen = false)} />
-
-<ReservationEdit
-  bind:showModal={resvEditModal}
-  {resvObj}
-  on:close={() => {
-    resvEditModal = false;
-    resvObj = null;
-  }}
-/>
-
 <style>
   .rowStart {
     min-width: 150px;
     max-width: 150px;
-    z-index: 1;
   }
   .rCell {
     min-width: 85px;
@@ -211,7 +215,6 @@
   .time-header {
     position: sticky;
     top: 0;
-    z-index: 1;
   }
   .time-header,
   .Locations {

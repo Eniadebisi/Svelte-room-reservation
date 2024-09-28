@@ -94,25 +94,25 @@ export async function editLocation(locationId, name) {
   }
 }
 
-export async function reserveRoom(roomId, userId, startTime, length, title, details) {
+export async function reserveRoom(roomId, userId, startTime, endTime, title, details) {
   try {
-    // if (checkAvailability(roomId, startTime, endtime)) {
+    if (await checkAvailability(roomId, startTime, endTime)) {
       await prisma.reservation.create({
         data: {
           roomId,
           userId,
           startTime,
+          endTime,
           title,
           details,
-          length,
         },
       });
-    //   // console.log(roomId, userId, startTime, endtime, title, details);
+      // console.log(roomId, userId, startTime, endTime, title, details);
 
       return { error: false };
-    // } else {
-    //   return { error: "Room is not available at that time." };
-    // }
+    } else {      
+      return { error: "Room is not available at that time." };
+    }
   } catch (e) {
     return { error: e.message };
   }
@@ -120,15 +120,17 @@ export async function reserveRoom(roomId, userId, startTime, length, title, deta
 
 async function checkAvailability(roomId, start, end) {
   try {
-    console.log("Check availability " + dayjs(start).toISOString() + "-" + dayjs(end).toISOString());
+    // console.log("Check availability " + dayjs(start).toISOString() + "-" + dayjs(end).toISOString());
 
     let reservations = await prisma.reservation.findFirst({
-      where: { startTime: { gte: start, lte: end } },
+      where: {roomId, startTime: { gte: start, lte: end } },
     });
-    console.log(reservations);
     
-    if (reservations) return false;
-    return false;
+    if (reservations) {
+      // console.log("Reservations not empty");
+      return false
+    };
+    return true;
   } catch (e) {
     return { error: e.message };
   }

@@ -2,9 +2,12 @@
   import { closeModal, closeAllModals, openModal, modals } from "svelte-modals";
   import { fade, scale } from "svelte/transition";
   import dayjs from "dayjs";
+  import AdvancedFormat from "dayjs/plugin/advancedFormat";
+  dayjs.extend(AdvancedFormat);
+  import type { Reservation } from "@prisma/client";
 
   export let isOpen;
-  export let resvObj: reservationObject;
+  export let resvObj: Reservation;
   export let openEditResv;
 </script>
 
@@ -16,19 +19,9 @@
           <div class="mt-2 px-7 py-3">
             Details: {resvObj.details}
             <br />
-            Date: {dayjs(resvObj.startTime).toISOString()}
+            Date: {dayjs(resvObj.startTime).format("dddd, MMMM D, YYYY")}
             <br />
-            Time: {(dayjs(resvObj.startTime).hour() * 100 + dayjs(resvObj.startTime).minute()).toString().padStart(4, "0")} - {(
-              dayjs(resvObj.startTime)
-                .add(resvObj.length * 30, "minute")
-                .hour() *
-                100 +
-              dayjs(resvObj.startTime)
-                .add(resvObj.length * 30, "minute")
-                .minute()
-            )
-              .toString()
-              .padStart(4, "0")}
+            Time: {(dayjs(resvObj.startTime).hour() * 100 + dayjs(resvObj.startTime).minute()).toString().padStart(4, "0")} - {(dayjs(resvObj.endTime).hour() * 100 + dayjs(resvObj.endTime).minute()).toString().padStart(4, "0")}
           </div>
           <div class="items-center px-4 py-3">
             <button on:click={closeModal} class=""> Close </button>

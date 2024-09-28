@@ -6,20 +6,39 @@
   dayjs.extend(utc);
   import timezone from "dayjs/plugin/timezone";
   dayjs.extend(timezone);
-  import type { Reservation } from "@prisma/client";
-  import { timeZone } from "./settings";
 
-  export let isOpen, rooms, user: any, refresh: Function;
-  export let resvObj: Reservation;
-  let date = dayjs(resvObj.startTime).format("YYYY-MM-DD");
-  const reservationId = resvObj.id;
-  let roomId = resvObj.roomId;
-  let sTime = parseInt(dayjs(resvObj.startTime).format("HHmm"));
-  let eTime = parseInt(dayjs(resvObj.endTime).format("HHmm"));
-  let eventTitle = resvObj.title;
-  let eventDetails = resvObj.details;
+  import type { User } from "@prisma/client";
+  import { timeZone } from "./settings";
+  import { goto, invalidateAll } from "$app/navigation";
+
+  export let isOpen, rooms, user: User, refresh: Function;
+  let date = dayjs(new Date()).format("YYYY-MM-DD");
+  let roomId: number,
+    start: Date,
+    sTime = 600,
+    eTime = 700,
+    eventTitle = "",
+    eventDetails = "Features",
+    length;
+  let recurring = false;
+  let weekday = date;
   let formError = false;
 
+  function getWeekText(date: Date) {
+    let weekday = dayjs(date).format("dddd");
+    let weekNum = Math.ceil(dayjs(date).date() / 7);
+
+    switch (weekNum) {
+      case 1:
+        return "1st" + " " + weekday;
+      case 2:
+        return "2nd" + " " + weekday;
+      case 3:
+        return "3rd" + " " + weekday;
+      default:
+        return weekNum + "rd" + " " + weekday;
+    }
+  }
   async function submitReservation() {
     const startTime = dayjs(date)
       .tz(timeZone)
@@ -34,14 +53,14 @@
 
     const response = await fetch("/api/newReservation", {
       method: "POST",
-      body: JSON.stringify({ reservationId, roomId, userId: user.id, startTime, endTime, eventTitle, eventDetails }),
+      body: JSON.stringify({ roomId, userId: user.id, startTime, endTime, eventTitle, eventDetails }),
     });
     const { error } = await response.json();
 
     if (error) {
       formError = error;
     } else {
-      refresh();
+      refresh()
     }
   }
 </script>
@@ -49,7 +68,7 @@
 {#if isOpen}
   <div role="dialog" class="modal">
     <div class="contents text-center">
-      <h1>Edit booking</h1>
+      <h1>Create new booking</h1>
 
       <div class="m-2">
         <label for="roomId">Room</label>
@@ -94,20 +113,20 @@
       </div>
 
       <!-- {getWeekText(date)}
-<div class="m-3">
-  <label for="recurrence">Make Recurring: </label>
-  <select name="recurrence" id="recurrence">
-    <option value="0">Does not repeat</option>
-    <option value="1">Daily</option>
-    <option value="2">Weekly on {dayjs(date).format("dddd")}</option>
-    <option value="3">Monthly on the {dayjs(date).format()}</option>
-    <option value="4">Every weekday (Monday to Friday)</option>
-  </select>
-</div>
+  <div class="m-3">
+    <label for="recurrence">Make Recurring: </label>
+    <select name="recurrence" id="recurrence">
+      <option value="0">Does not repeat</option>
+      <option value="1">Daily</option>
+      <option value="2">Weekly on {dayjs(date).format("dddd")}</option>
+      <option value="3">Monthly on the {dayjs(date).format()}</option>
+      <option value="4">Every weekday (Monday to Friday)</option>
+    </select>
+  </div>
 
-{#if recurring}
-  <select name="" id=""></select>
-{/if} -->
+  {#if recurring}
+    <select name="" id=""></select>
+  {/if} -->
 
       <br />
       {#if formError}
