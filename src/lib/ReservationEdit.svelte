@@ -18,7 +18,7 @@
   let eTime = parseInt(dayjs(resvObj.endTime).format("HHmm"));
   let eventTitle = resvObj.title;
   let eventDetails = resvObj.details;
-  let formError = false;
+  let formError = "";
 
   async function submitReservation() {
     const startTime = dayjs(date)
@@ -32,12 +32,12 @@
       .minute(eTime % 100)
       .toISOString();
 
-    const response = await fetch("/api/newReservation", {
-      method: "POST",
-      body: JSON.stringify({ reservationId, roomId, userId: user.id, startTime, endTime, eventTitle, eventDetails }),
-    });
-    const { error } = await response.json();
-
+    // const response = await fetch("/api/newReservation", {
+    //   method: "POST",
+    //   body: JSON.stringify({ reservationId, roomId, userId: user.id, startTime, endTime, eventTitle, eventDetails }),
+    // });
+    // const { error } = await response.json();
+    const error = "This feature is disabled"
     if (error) {
       formError = error;
     } else {
