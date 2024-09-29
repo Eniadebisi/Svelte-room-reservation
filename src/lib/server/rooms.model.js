@@ -154,7 +154,7 @@ export async function delReservation(id) {
       },
     });
 
-    return { success: true, message: `Reservation with ID ${reservationId} deleted successfully` };
+    return {error: false}
   } catch (error) {
     logger.error(`Error deleting reservation: ${error}`);
     return { success: false, message: `Failed to delete reservation with ID ${reservationId}` };

@@ -8,11 +8,9 @@
   import { timeZone } from "$lib/settings";
   import NewReservation from "$lib/newReservation.svelte";
   import type { Reservation } from "@prisma/client";
-  import { goto, invalidate, invalidateAll } from "$app/navigation";
-  import { redirect } from "@sveltejs/kit";
 
   export let data: PageData;
-  let date = new Date();
+  let date = data.date ? new Date(data.date) : new Date();
   let staticDate = dayjs(date).format("YYYY-MM-DD");
   let reservations = data.reservations;
 
@@ -34,6 +32,12 @@
       openEditResv: () => {
         closeModal();
         openReservationEdit(resvObj);
+      },
+      refresh: () => {
+        if (browser) {
+          window.location.href = "/reservations?date="+dayjs(date).format("MM/DD/YYYY");
+        }
+        closeModal();
       },
     });
   }
